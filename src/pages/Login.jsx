@@ -41,6 +41,7 @@ function Login({ setShowLogin, loading, setLoading, message, setMessage, remembe
       rememberMe
         ? (localStorage.setItem('rememberMe', 'true'), localStorage.setItem('email', email))
         : (localStorage.removeItem('rememberMe'), localStorage.removeItem('email'));
+
       navigate('/dashboard');
     } catch (error) {
       setMessage(`❌ ${error.message}`);
@@ -62,6 +63,12 @@ function Login({ setShowLogin, loading, setLoading, message, setMessage, remembe
 
   return (
     <>
+      <div className="background-slider">
+        <img src="/images/crash1.jpg" alt="Crash 1" />
+        <img src="/images/crash2.jpg" alt="Crash 2" />
+        <img src="/images/crash3.jpg" alt="Crash 3" />
+      </div>
+
       <h1>
         CrashSpot
         <div>Community-Powered Road Safety & Petition Platform</div>

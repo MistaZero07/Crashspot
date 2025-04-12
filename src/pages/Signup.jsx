@@ -1,53 +1,48 @@
+// src/pages/Signup.jsx
 import React, { useState, useRef } from 'react';
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { FcGoogle } from 'react-icons/fc';
+import { useNavigate } from 'react-router-dom';
 
-function Signup({ setShowLogin, setLoading, message, setMessage }) {
+const Signup = ({ setShowLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState('');
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const confirmRef = useRef(null);
+  const navigate = useNavigate();
 
-  const validate = () => {
-    const newErrors = {};
-    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      newErrors.email = 'Invalid email format';
-    }
-    if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-    if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validatePassword = (password) => password.length >= 6;
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    setMessage('');
 
-    setLoading(true);
+    if (!validateEmail(email)) {
+      setMessage('❌ Invalid email format');
+      emailRef.current.focus();
+      return;
+    }
+    if (!validatePassword(password)) {
+      setMessage('❌ Password must be at least 6 characters');
+      passwordRef.current.focus();
+      return;
+    }
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      await setDoc(doc(db, 'users', user.uid), {
-        email: user.email,
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, 'users', result.user.uid), {
+        email: result.user.email,
         createdAt: serverTimestamp(),
       });
 
-      setMessage('✅ Signup successful! You can now log in.');
-      setShowLogin(true);
+      setMessage('✅ Signup successful!');
+      navigate('/dashboard');
     } catch (error) {
       setMessage(`❌ ${error.message}`);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -64,88 +59,56 @@ function Signup({ setShowLogin, setLoading, message, setMessage }) {
       });
 
       setMessage('✅ Google Signup successful!');
-      setShowLogin(true);
+      navigate('/dashboard');
     } catch (error) {
       setMessage(`❌ ${error.message}`);
     }
   };
 
   return (
-    <>
-      <h1>
-        CrashSpot
-        <div>Create a new account to help improve road safety</div>
-      </h1>
+    <div className="login-container">
+      <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>Create Your Account 🚀</h2>
 
-      <div className="login-container">
-        <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', fontWeight: '600' }}>
-          Sign Up 🚀
-        </h2>
-        <form onSubmit={handleSignup}>
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              ref={emailRef}
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            {errors.email && <div className="error">{errors.email}</div>}
-          </div>
+      <form onSubmit={handleSignup}>
+        <div>
+          <label htmlFor="email">Email</label>
+          <input
+            ref={emailRef}
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+          />
+        </div>
 
-          <div>
-            <label>Password</label>
-            <input
-              type="password"
-              ref={passwordRef}
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {errors.password && <div className="error">{errors.password}</div>}
-          </div>
+        <div>
+          <label htmlFor="password">Password</label>
+          <input
+            ref={passwordRef}
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Create a password"
+          />
+        </div>
 
-          <div>
-            <label>Confirm Password</label>
-            <input
-              type="password"
-              ref={confirmRef}
-              placeholder="••••••••"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
-          </div>
+        <button type="submit">Sign Up</button>
+        <p style={{ fontSize: '0.9rem', textAlign: 'center', marginTop: '0.5rem' }}>{message}</p>
+      </form>
 
-          <button type="submit">
-            {setLoading ? 'Signing up...' : 'Sign Up'}
-          </button>
+      <div style={{ textAlign: 'center', margin: '1.5rem 0', color: '#ccc' }}>OR</div>
 
-          <p
-            style={{
-              textAlign: 'center',
-              fontSize: '0.9rem',
-              marginTop: '0.5rem',
-              color: message.startsWith('✅') ? '#4ade80' : '#f87171',
-            }}
-          >
-            {message}
-          </p>
-        </form>
+      <button className="googleButton" onClick={handleGoogleSignup}>
+        <FcGoogle size={24} /> Sign up with Google
+      </button>
 
-        <div style={{ textAlign: 'center', margin: '1.5rem 0', color: '#ccc' }}>OR</div>
-
-        <button className="googleButton" onClick={handleGoogleSignup}>
-          <FcGoogle size={24} /> Sign up with Google
-        </button>
-
-        <button className="switchButton" onClick={() => setShowLogin(true)}>
-          Already have an account? Log In
-        </button>
-      </div>
-    </>
+      <button className="switchButton" onClick={() => setShowLogin(true)}>
+        Already have an account? Log In
+      </button>
+    </div>
   );
-}
+};
 
 export default Signup;
