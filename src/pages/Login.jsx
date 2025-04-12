@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../firebase';
 import { FcGoogle } from 'react-icons/fc';
+import { useNavigate } from 'react-router-dom';
 
 function Login({ setShowLogin, loading, setLoading, message, setMessage, rememberMe, setRememberMe }) {
   const [email, setEmail] = useState('');
@@ -11,6 +12,7 @@ function Login({ setShowLogin, loading, setLoading, message, setMessage, remembe
   const [passwordError, setPasswordError] = useState('');
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const navigate = useNavigate();
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const validatePassword = (password) => password.length >= 6;
@@ -39,6 +41,7 @@ function Login({ setShowLogin, loading, setLoading, message, setMessage, remembe
       rememberMe
         ? (localStorage.setItem('rememberMe', 'true'), localStorage.setItem('email', email))
         : (localStorage.removeItem('rememberMe'), localStorage.removeItem('email'));
+      navigate('/dashboard');
     } catch (error) {
       setMessage(`❌ ${error.message}`);
     } finally {
@@ -51,6 +54,7 @@ function Login({ setShowLogin, loading, setLoading, message, setMessage, remembe
     try {
       await signInWithPopup(auth, provider);
       setMessage('✅ Google Login successful!');
+      navigate('/dashboard');
     } catch (error) {
       setMessage(`❌ ${error.message}`);
     }
