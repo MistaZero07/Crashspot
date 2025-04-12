@@ -3,6 +3,8 @@ import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 
 import { auth } from '../firebase';
 import { FcGoogle } from 'react-icons/fc';
 import { useNavigate } from 'react-router-dom';
+import AuthLayout from '../components/AuthLayout';
+
 
 function Login({ setShowLogin, loading, setLoading, message, setMessage, rememberMe, setRememberMe }) {
   const [email, setEmail] = useState('');
@@ -41,7 +43,6 @@ function Login({ setShowLogin, loading, setLoading, message, setMessage, remembe
       rememberMe
         ? (localStorage.setItem('rememberMe', 'true'), localStorage.setItem('email', email))
         : (localStorage.removeItem('rememberMe'), localStorage.removeItem('email'));
-
       navigate('/dashboard');
     } catch (error) {
       setMessage(`❌ ${error.message}`);
@@ -63,25 +64,20 @@ function Login({ setShowLogin, loading, setLoading, message, setMessage, remembe
 
   return (
     <>
-      <div className="background-slider">
-        <img src="/images/crash1.jpg" alt="Crash 1" />
-        <img src="/images/crash2.jpg" alt="Crash 2" />
-        <img src="/images/crash3.jpg" alt="Crash 3" />
+      {/* Background Image Slider */}
+      <AuthLayout>
+    <h1 className="text-black text-4xl font-bold text-center z-10 relative mt-6">
+      CrashSpot
+      <div className="text-sm font-light text-gray-300">
+        Community-Powered Road Safety & Petition Platform
       </div>
+    </h1>
 
-      <h1>
-        CrashSpot
-        <div>Community-Powered Road Safety & Petition Platform</div>
-      </h1>
+    <div className="relative z-10 mt-6 mx-auto w-full max-w-md bg-white bg-opacity-10 backdrop-blur-lg text-white p-8 rounded-2xl shadow-lg">
 
-      <div className="login-container">
-        <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', fontWeight: '600' }}>
-          Welcome Back 👋
-        </h2>
-
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email" className="block mb-1 font-medium">Email</label>
             <input
               type="email"
               id="email"
@@ -89,13 +85,14 @@ function Login({ setShowLogin, loading, setLoading, message, setMessage, remembe
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-20 focus:bg-opacity-30 outline-none text-white placeholder-gray-300"
             />
-            {emailError && <div className="error">{emailError}</div>}
+            {emailError && <p className="text-red-400 text-sm mt-1">{emailError}</p>}
           </div>
 
           <div>
-            <label htmlFor="password">Password</label>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <label htmlFor="password" className="block mb-1 font-medium">Password</label>
+            <div className="flex items-center gap-2">
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
@@ -103,20 +100,21 @@ function Login({ setShowLogin, loading, setLoading, message, setMessage, remembe
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-20 focus:bg-opacity-30 outline-none text-black placeholder-gray-300"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                style={{ background: 'none', color: '#ccc', border: 'none', cursor: 'pointer' }}
+                className="text-sm text-blue-300 hover:text-blue-500"
               >
                 {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
-            {passwordError && <div className="error">{passwordError}</div>}
+            {passwordError && <p className="text-red-400 text-sm mt-1">{passwordError}</p>}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div className="flex justify-between items-center text-sm">
+            <label className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={rememberMe}
@@ -124,28 +122,38 @@ function Login({ setShowLogin, loading, setLoading, message, setMessage, remembe
               />
               Remember Me
             </label>
-            <button type="button" style={{ background: 'none', border: 'none', color: '#a3bffa', cursor: 'pointer' }}>
+            <button type="button" className="text-blue-300 hover:text-blue-500">
               Forgot Password?
             </button>
           </div>
 
-          <button type="submit">
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 hover:bg-indigo-800 text-white py-2 rounded-lg font-medium transition"
+          >
             {loading ? 'Logging in...' : 'Log In'}
           </button>
 
-          <p style={{ textAlign: 'center', fontSize: '0.9rem', marginTop: '0.5rem' }}>{message}</p>
+          {message && <p className="text-center text-sm mt-2">{message}</p>}
         </form>
 
-        <div style={{ textAlign: 'center', margin: '1.5rem 0', color: '#ccc' }}>OR</div>
+        <div className="text-center my-4 text-gray-300">OR</div>
 
-        <button className="googleButton" onClick={handleGoogleSignIn}>
+        <button
+          onClick={handleGoogleSignIn}
+          className="w-full flex items-center justify-center gap-2 bg-white text-black font-medium py-2 rounded-lg hover:bg-gray-200 transition"
+        >
           <FcGoogle size={24} /> Sign in with Google
         </button>
 
-        <button className="switchButton" onClick={() => setShowLogin(false)}>
+        <button
+          onClick={() => setShowLogin(false)}
+          className="block w-full text-center mt-4 text-blue-300 hover:text-blue-500 text-sm"
+        >
           Don’t have an account? Sign Up
         </button>
       </div>
+      </AuthLayout>
     </>
   );
 }

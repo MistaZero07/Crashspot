@@ -5,24 +5,24 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { Sagar } from "./pages/Sagar";
+import Navbar  from "./components/NavBar";
+// App.jsx
+import Footer from "./components/Footer";
+
 import "./App.css";
 
 function App() {
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
 
   return (
     <>
-      <div className="background-slider">
-        <img src="/images/crash1.jpg" alt="Crash 1" />
-        <img src="/images/crash2.jpg" alt="Crash 2" />
-        <img src="/images/crash3.jpg" alt="Crash 3" />
-      </div>
+      <Navbar />
 
       <Routes>
-        {/* Support for both "/" and "/login" routes */}
         <Route
           path="/"
           element={
@@ -60,9 +60,11 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* Redirect unknown paths to login */}
+        <Route path="/rough" element={<Sagar />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+
+      <Footer />
     </>
   );
 }
