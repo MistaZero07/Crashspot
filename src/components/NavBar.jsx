@@ -54,7 +54,7 @@ export default function NavBar() {
             <a href="/" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Home</a>
             <a href="#" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">About</a>
             <a href="/heatmap" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">HeatMap</a>
-            <a href="#" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Statistics</a>
+            <a href="/records" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Statistics</a>
             <a href="#" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Contact</a>
 
             {authChecked && isLoggedIn ? (
@@ -115,7 +115,7 @@ export default function NavBar() {
             <a href="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Home</a>
             <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">About</a>
             <a href="/heatmap" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">HeatMap</a>
-            <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Statistics</a>
+            <a href="/records" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Statistics</a>
             <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Contact</a>
 
             {isLoggedIn ? (
