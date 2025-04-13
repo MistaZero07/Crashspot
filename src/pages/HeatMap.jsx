@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Info, MapPin, ChevronDown, LocateFixed } from "lucide-react";
+import { Info, MapPin, ChevronDown, Send } from "lucide-react";
 
 export default function HeatMap() {
   const cityOptions = {
@@ -33,18 +33,33 @@ export default function HeatMap() {
 
   const [activeCity, setActiveCity] = useState("monroe");
   const [activeAddress, setActiveAddress] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [reportNote, setReportNote] = useState("");
 
   const handleCityChange = (e) => {
     const city = e.target.value;
     setActiveCity(city);
-    setActiveAddress(""); // reset address when city changes
+    setActiveAddress("");
+    setShowForm(false);
+  };
+
+  const getCurrentLocationLabel = () => {
+    if (activeCity === "current") return cityOptions.current.label;
+    const selectedAddress = (addressOptions[activeCity] || []).find(a => a.key === activeAddress);
+    return selectedAddress ? selectedAddress.label : cityOptions[activeCity].label;
   };
 
   const getCurrentImage = () => {
     if (activeCity === "current") return cityOptions.current.image;
-    const cityAddresses = addressOptions[activeCity] || [];
-    const selectedAddress = cityAddresses.find((addr) => addr.key === activeAddress);
+    const selectedAddress = (addressOptions[activeCity] || []).find(a => a.key === activeAddress);
     return selectedAddress ? selectedAddress.image : cityOptions[activeCity].image;
+  };
+
+  const handleSubmit = () => {
+    if (!reportNote.trim()) return alert("Please enter a note before submitting.");
+    alert(`Submitted report for ${getCurrentLocationLabel()}:\n${reportNote}`);
+    setReportNote("");
+    setShowForm(false);
   };
 
   return (
@@ -55,16 +70,15 @@ export default function HeatMap() {
           <p className="text-gray-600">Select a city, specific area, or your current location to view accident zones.</p>
         </div>
 
-        {/* City and Address Filters */}
+        {/* Filters */}
         <div className="bg-white p-4 rounded-lg shadow-md mb-6 flex flex-col md:flex-row gap-4">
-          {/* City Dropdown */}
           <div className="flex flex-col w-full md:w-1/2">
             <label className="text-sm font-medium text-gray-700 mb-1">Choose a City</label>
             <div className="relative">
               <select
                 value={activeCity}
                 onChange={handleCityChange}
-                className="w-full appearance-none bg-white border border-gray-300 text-gray-800 py-2 px-4 pr-8 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+                className="w-full bg-white border border-gray-300 text-gray-800 py-2 px-4 pr-8 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
               >
                 {Object.entries(cityOptions).map(([key, val]) => (
                   <option key={key} value={key}>{val.label}</option>
@@ -74,7 +88,6 @@ export default function HeatMap() {
             </div>
           </div>
 
-          {/* Address Dropdown */}
           <div className="flex flex-col w-full md:w-1/2">
             <label className="text-sm font-medium text-gray-700 mb-1">Specific Address</label>
             <div className="relative">
@@ -96,8 +109,9 @@ export default function HeatMap() {
           </div>
         </div>
 
-        {/* Image Display */}
+        {/* Main Section */}
         <div className="grid md:grid-cols-3 gap-6">
+          {/* Image */}
           <div className="md:col-span-2">
             <div className="bg-white rounded-lg overflow-hidden shadow-md">
               <div className="w-full h-[500px] bg-gray-200 flex items-center justify-center">
@@ -112,7 +126,7 @@ export default function HeatMap() {
 
           {/* Sidebar */}
           <div className="md:col-span-1 space-y-6">
-            {/* Report Card */}
+            {/* Report Form */}
             <div className="bg-white rounded-lg shadow-md p-4">
               <div className="flex items-start mb-4">
                 <div className="mr-3">
@@ -121,13 +135,47 @@ export default function HeatMap() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-gray-900">Report an Accident</h3>
-                  <p className="text-gray-600 text-sm">Help make our roads safer by reporting accidents and hazards.</p>
+                  <h3 className="font-bold text-lg text-gray-900">Report a Hazard or Issue</h3>
+                  <p className="text-gray-600 text-sm">
+                    Submit concerns like potholes, faded lanes, or faulty signals to city departments.
+                  </p>
                 </div>
               </div>
-              <button className="w-full px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition-colors">
-                Start New Report
+
+              <button
+                onClick={() => setShowForm(!showForm)}
+                className="w-full px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition-colors"
+              >
+                {showForm ? "Close Form" : "Report Hazard or Road Issue"}
               </button>
+
+              {showForm && (
+                <div className="mt-4 space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Location</label>
+                    <div className="mt-1 p-2 border rounded-md text-gray-600 bg-gray-100">{getCurrentLocationLabel()}</div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Note</label>
+                    <textarea
+                      value={reportNote}
+                      onChange={(e) => setReportNote(e.target.value)}
+                      rows={3}
+                      placeholder="Describe the issue (e.g., pothole, signal not working)..."
+                      className="w-full mt-1 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 text-gray-800"
+                    />
+                  </div>
+
+                  <button
+                    onClick={handleSubmit}
+                    className="flex items-center gap-2 justify-center w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                  >
+                    <Send className="w-4 h-4" />
+                    Submit Report
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Info Box */}

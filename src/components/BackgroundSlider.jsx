@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react';
 
 const images = [
-  '/public/images/crash1.jpg',
-  '/public/images/crash2.jpg',
-  '/public/images/crash3.jpg',
+  '/images/crash1.jpg',
+  '/images/crash2.jpg',
+  '/images/crash3.jpg',
 ];
 
 export default function BackgroundSlider() {
