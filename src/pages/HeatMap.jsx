@@ -1,152 +1,118 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Info, MapPin } from "lucide-react"
+import { useState } from "react";
+import { Info, MapPin, ChevronDown, LocateFixed } from "lucide-react";
 
 export default function HeatMap() {
-  const [activeFilter, setActiveFilter] = useState("all")
-  const [selectedHotspot, setSelectedHotspot] = useState(null)
+  const cityOptions = {
+    current: { label: "📍 Use My Current Location", image: "/images/pic7.png" },
+    monroe: { label: "Monroe, LA", image: "/images/monroe.png" },
+    westmonroe: { label: "West Monroe, LA", image: "/images/westmonroe.png" },
+    shreveport: { label: "Shreveport, LA", image: "/images/shreveport.png" },
+    batonrouge: { label: "Baton Rouge, LA", image: "/images/baton.png" },
+  };
 
-  const filterData = {
-    all: { title: "All Accidents", total: 248, reduced: 32, percentage: 13 },
-    recent: { title: "Recent Accidents (30 days)", total: 87, reduced: 12, percentage: 14 },
-    severity: { title: "Accidents by Severity", total: 156, reduced: 43, percentage: 28 },
-    fixed: { title: "Fixed Locations", total: 92, reduced: 78, percentage: 85 },
-  }
+  const addressOptions = {
+    monroe: [
+      { key: "spurgeon", label: "4007 Spurgeon Drive", image: "/images/spurgeon.png" },
+      { key: "warhawk", label: "Warhawk Way", image: "/images/desiard.png" },
+    ],
+    westmonroe: [
+      { key: "wm1", label: "Thomas Road", image: "/images/pic8.png" },
+      { key: "wm2", label: "Natchitoches St", image: "/images/pic9.png" },
+    ],
+    shreveport: [
+      { key: "sh1", label: "Line Avenue", image: "/images/pic10.png" },
+      { key: "sh2", label: "Youree Drive", image: "/images/pic11.png" },
+    ],
+    batonrouge: [
+      { key: "br1", label: "College Drive", image: "/images/pic12.png" },
+      { key: "br2", label: "Government Street", image: "/images/pic13.png" },
+    ],
+  };
 
-  const hotspots = [
-    { id: 1, x: 25, y: 30, size: 16, intensity: 0.8, name: "Main Street Intersection", before: 12, after: 3, reduction: 75 },
-    { id: 2, x: 70, y: 60, size: 12, intensity: 0.6, name: "Riverside Drive Curve", before: 8, after: 1, reduction: 88 },
-    { id: 3, x: 80, y: 20, size: 14, intensity: 0.7, name: "Oak Street School Zone", before: 5, after: 0, reduction: 100 },
-  ]
+  const [activeCity, setActiveCity] = useState("monroe");
+  const [activeAddress, setActiveAddress] = useState("");
 
-  const handleHotspotClick = (hotspot) => {
-    setSelectedHotspot(selectedHotspot?.id === hotspot.id ? null : hotspot)
-  }
+  const handleCityChange = (e) => {
+    const city = e.target.value;
+    setActiveCity(city);
+    setActiveAddress(""); // reset address when city changes
+  };
+
+  const getCurrentImage = () => {
+    if (activeCity === "current") return cityOptions.current.image;
+    const cityAddresses = addressOptions[activeCity] || [];
+    const selectedAddress = cityAddresses.find((addr) => addr.key === activeAddress);
+    return selectedAddress ? selectedAddress.image : cityOptions[activeCity].image;
+  };
 
   return (
     <div className="bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Accident Heatmap</h1>
-          <p className="text-gray-600">View accident-prone areas across the city and see how safety improvements have reduced incidents.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">City & Location Heatmap</h1>
+          <p className="text-gray-600">Select a city, specific area, or your current location to view accident zones.</p>
         </div>
 
-        {/* Filter tabs */}
-        <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-          <div className="flex flex-wrap gap-2">
-            {Object.keys(filterData).map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={`px-4 py-2 rounded-md text-sm font-medium ${
-                  activeFilter === filter ? "bg-red-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+        {/* City and Address Filters */}
+        <div className="bg-white p-4 rounded-lg shadow-md mb-6 flex flex-col md:flex-row gap-4">
+          {/* City Dropdown */}
+          <div className="flex flex-col w-full md:w-1/2">
+            <label className="text-sm font-medium text-gray-700 mb-1">Choose a City</label>
+            <div className="relative">
+              <select
+                value={activeCity}
+                onChange={handleCityChange}
+                className="w-full appearance-none bg-white border border-gray-300 text-gray-800 py-2 px-4 pr-8 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+              >
+                {Object.entries(cityOptions).map(([key, val]) => (
+                  <option key={key} value={key}>{val.label}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute top-2.5 right-3 w-5 h-5 text-gray-500 pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Address Dropdown */}
+          <div className="flex flex-col w-full md:w-1/2">
+            <label className="text-sm font-medium text-gray-700 mb-1">Specific Address</label>
+            <div className="relative">
+              <select
+                value={activeAddress}
+                onChange={(e) => setActiveAddress(e.target.value)}
+                disabled={activeCity === "current"}
+                className={`w-full appearance-none border py-2 px-4 pr-8 rounded-md shadow-sm focus:outline-none focus:ring ${
+                  activeCity === "current" ? "bg-gray-100 cursor-not-allowed text-gray-400" : "bg-white border-gray-300 text-gray-800"
                 }`}
               >
-                {filterData[filter].title}
-              </button>
-            ))}
+                <option value="">-- General City View --</option>
+                {(addressOptions[activeCity] || []).map(({ key, label }) => (
+                  <option key={key} value={key}>{label}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute top-2.5 right-3 w-5 h-5 text-gray-500 pointer-events-none" />
+            </div>
           </div>
         </div>
 
+        {/* Image Display */}
         <div className="grid md:grid-cols-3 gap-6">
-          {/* Heatmap display */}
           <div className="md:col-span-2">
             <div className="bg-white rounded-lg overflow-hidden shadow-md">
-              <div
-                className="relative w-full h-[500px] bg-gray-100"
-                style={{
-                  backgroundImage: `url('/your-image-path.png')`, // replace with actual path
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              >
-                {hotspots.map((hotspot) => (
-                  <button
-                    key={hotspot.id}
-                    className={`absolute rounded-full cursor-pointer transform -translate-x-1/2 -translate-y-1/2 ${
-                      selectedHotspot?.id === hotspot.id ? "ring-4 ring-yellow-400" : ""
-                    }`}
-                    style={{
-                      top: `${hotspot.y}%`,
-                      left: `${hotspot.x}%`,
-                      width: `${hotspot.size * 2}px`,
-                      height: `${hotspot.size * 2}px`,
-                      backgroundColor: `rgba(220, 38, 38, ${hotspot.intensity})`,
-                    }}
-                    onClick={() => handleHotspotClick(hotspot)}
-                    aria-label={`Hotspot: ${hotspot.name}`}
-                  ></button>
-                ))}
-
-                {/* Legend */}
-                <div className="absolute bottom-4 left-4 bg-white/90 p-3 rounded-md shadow-md">
-                  <div className="text-sm font-medium mb-2">Accident Density</div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-red-300"></div><span className="text-xs">Low</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-red-500"></div><span className="text-xs">Medium</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-red-700"></div><span className="text-xs">High</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stats */}
-              <div className="bg-white p-4 border-t">
-                <div className="flex flex-wrap gap-4 justify-around">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold">{filterData[activeFilter].total}</div>
-                    <div className="text-sm text-gray-600">Total Incidents</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">{filterData[activeFilter].reduced}</div>
-                    <div className="text-sm text-gray-600">Incidents Reduced</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">{filterData[activeFilter].percentage}%</div>
-                    <div className="text-sm text-gray-600">Reduction Rate</div>
-                  </div>
-                </div>
+              <div className="w-full h-[500px] bg-gray-200 flex items-center justify-center">
+                <img
+                  src={getCurrentImage()}
+                  alt="Selected Location"
+                  className="object-cover w-full h-full"
+                />
               </div>
             </div>
           </div>
 
           {/* Sidebar */}
           <div className="md:col-span-1 space-y-6">
-            {selectedHotspot && (
-              <div className="bg-white rounded-lg shadow-md p-4">
-                <h3 className="font-bold text-lg mb-2 text-gray-900">{selectedHotspot.name}</h3>
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-600 text-sm">Before: {selectedHotspot.before} accidents/year</span>
-                  <span className="text-green-600 text-sm">After: {selectedHotspot.after} accidents/year</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-                  <div
-                    className="bg-green-600 h-2.5 rounded-full"
-                    style={{ width: `${selectedHotspot.reduction}%` }}
-                  ></div>
-                </div>
-                <p className="text-gray-700 mb-4">
-                  {selectedHotspot.name === "Main Street Intersection"
-                    ? "Added traffic signals, improved visibility, and redesigned pedestrian crossings."
-                    : selectedHotspot.name === "Riverside Drive Curve"
-                      ? "Installed guardrails, added warning signs, and improved road surface for better traction."
-                      : "Added speed bumps, flashing school zone signs, and dedicated crossing guards during peak hours."}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Completed:{" "}
-                  {selectedHotspot.name === "Main Street Intersection"
-                    ? "January 2023"
-                    : selectedHotspot.name === "Riverside Drive Curve"
-                      ? "March 2023"
-                      : "May 2023"}
-                </p>
-              </div>
-            )}
-
+            {/* Report Card */}
             <div className="bg-white rounded-lg shadow-md p-4">
               <div className="flex items-start mb-4">
                 <div className="mr-3">
@@ -164,6 +130,7 @@ export default function HeatMap() {
               </button>
             </div>
 
+            {/* Info Box */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex">
               <div className="mr-3">
                 <Info className="h-5 w-5 text-blue-500" />
@@ -171,7 +138,7 @@ export default function HeatMap() {
               <div>
                 <h3 className="font-medium text-blue-800 mb-1">About the Heatmap</h3>
                 <p className="text-sm text-blue-700">
-                  This heatmap shows accident-prone areas based on community reports and official data.
+                  This view displays city-level and address-specific visuals based on accident and hazard reports.
                 </p>
               </div>
             </div>
@@ -179,5 +146,5 @@ export default function HeatMap() {
         </div>
       </div>
     </div>
-  )
+  );
 }
