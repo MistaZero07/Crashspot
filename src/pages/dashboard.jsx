@@ -26,9 +26,9 @@ const Dashboard = () => {
     <div className="dashboard-wrapper">
       <header className="dashboard-header">
         <h1>🚦 CrashSpot Dashboard</h1>
-        <button className="logout-button" onClick={handleLogout}>
+        {/* <button className="logout-button" onClick={handleLogout}>
           Logout
-        </button>
+        </button> */}
       </header>
 
       <section className="welcome-section">

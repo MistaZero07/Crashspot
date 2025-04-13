@@ -11,6 +11,8 @@ import Navbar  from "./components/NavBar";
 import Footer from "./components/Footer";
 
 import "./App.css";
+import Home from "./pages/Home";
+import HeatMap from "./pages/HeatMap";
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -21,9 +23,10 @@ function App() {
   return (
     <>
       <Navbar />
+      <div className="pt-16">
 
       <Routes>
-        <Route
+        {/* <Route
           path="/"
           element={
             <Login
@@ -36,7 +39,7 @@ function App() {
               setShowLogin={setShowLogin}
             />
           }
-        />
+        /> */}
         <Route
           path="/login"
           element={
@@ -61,9 +64,11 @@ function App() {
           }
         />
         <Route path="/rough" element={<Sagar />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/" element={<Home/>} />
+        <Route path="/heatmap" element={<HeatMap />} />
+        
       </Routes>
-
+          </div>
       <Footer />
     </>
   );
