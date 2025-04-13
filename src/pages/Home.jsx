@@ -1,4 +1,5 @@
 import { MapPin, Shield, TrendingDown, Users } from "lucide-react"
+// import AIImpactSummaryCard from '../components/AIImpactSummaryCard';
 
 export default function Home() {
   return (
@@ -74,6 +75,7 @@ export default function Home() {
               <h3 className="text-3xl font-bold text-gray-900 mb-2">1,500+</h3>
               <p className="text-gray-600">Community Contributors</p>
             </div>
+            {/* <AIImpactSummaryCard /> */}
           </div>
         </div>
       </section>
