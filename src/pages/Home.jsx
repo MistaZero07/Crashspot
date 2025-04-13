@@ -1,14 +1,26 @@
 import { MapPin, Shield, TrendingDown, Users } from "lucide-react"
-import { Link } from "react-router-dom"
-import { useEffect, useState } from "react"
-
-
+import { useEffect, useState } from "react";  
+// import AIImpactSummaryCard from '../components/AIImpactSummaryCard';
 
 export default function Home() {
-  const [aiSummary, setAiSummary] = useState(null)
-  const [showSummaryBtn, setShowSummaryBtn] = useState(true)
-  const images = ["/images/road1.jpg", "/images/road2.jpg", "/images/road3.jpg"]
-  const [currentImage, setCurrentImage] = useState(0)
+  const [aiSummary, setAiSummary] = useState(
+    "📈 AI Insight: Reports from 2019–2022 indicate a rising trend of crashes in dimly lit intersections. Improvements like lighting and speed control could reduce incidents by 30% in affected zones."
+  );
+  const [showSummaryBtn, setShowSummaryBtn] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
+
+  const images = [
+    "images/road1.jpg",
+    "images/road2.jpg",
+    "images/road3.jpg"
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="w-full">
