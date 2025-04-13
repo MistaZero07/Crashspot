@@ -1,8 +1,15 @@
 import { MapPin, Shield, TrendingDown, Users } from "lucide-react"
 import { Link } from "react-router-dom"
+import { useEffect, useState } from "react"
+
 
 
 export default function Home() {
+  const [aiSummary, setAiSummary] = useState(null)
+  const [showSummaryBtn, setShowSummaryBtn] = useState(true)
+  const images = ["/images/road1.jpg", "/images/road2.jpg", "/images/road3.jpg"]
+  const [currentImage, setCurrentImage] = useState(0)
+
   return (
     <div className="w-full">
       {/* AI Summary Popup */}
