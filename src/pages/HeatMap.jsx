@@ -5,7 +5,7 @@ import { Info, MapPin, ChevronDown, LocateFixed } from "lucide-react";
 
 export default function HeatMap() {
   const cityOptions = {
-    current: { label: "📍 Use My Current Location", image: "/images/pic7.png" },
+    current: { label: "📍 Use My Current Location", image: "/images/location.png" },
     monroe: { label: "Monroe, LA", image: "/images/monroe.png" },
     westmonroe: { label: "West Monroe, LA", image: "/images/westmonroe.png" },
     shreveport: { label: "Shreveport, LA", image: "/images/shreveport.png" },
@@ -14,7 +14,7 @@ export default function HeatMap() {
 
   const addressOptions = {
     monroe: [
-      { key: "spurgeon", label: "4007 Spurgeon Drive", image: "/images/spurgeon.png" },
+      { key: "spurgeon", label: "4007 Spurgeon Drive", image: "/images/spur.png" },
       { key: "warhawk", label: "Warhawk Way", image: "/images/desiard.png" },
     ],
     westmonroe: [
