@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { MapPin, Shield, TrendingDown, Users } from "lucide-react"
+import { Link } from "react-router-dom"
+
 
 export default function Home({ onNavigate }) {
   const images = ["/images/road1.jpg", "/images/road2.jpg", "/images/road3.jpg"]
@@ -297,12 +299,14 @@ export default function Home({ onNavigate }) {
           </div>
 
           <div className="text-center mt-12">
-            <button
-              onClick={() => onNavigate && onNavigate("heatmap")}
-              className="inline-flex items-center px-8 py-4 border border-gray-300 shadow-lg text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-all"
-            >
-              View All Improvements
-            </button>
+          <Link
+  to="/records"
+  className="inline-flex items-center px-8 py-4 border border-gray-300 shadow-lg text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-all"
+>
+  View All Improvements
+</Link>
+
+
           </div>
         </div>
       </section>

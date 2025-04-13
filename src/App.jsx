@@ -13,6 +13,7 @@ import Footer from "./components/Footer";
 import "./App.css";
 import Home from "./pages/Home";
 import HeatMap from "./pages/HeatMap";
+import Records from "./pages/Records";
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -66,6 +67,7 @@ function App() {
         <Route path="/rough" element={<Sagar />} />
         <Route path="/" element={<Home/>} />
         <Route path="/heatmap" element={<HeatMap />} />
+        <Route path="/records" element={<Records />} />
         
       </Routes>
           </div>
